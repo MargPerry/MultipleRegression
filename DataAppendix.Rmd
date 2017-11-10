@@ -25,9 +25,58 @@ newData = inner_join(collegeChardata, collegedata, by="name")
 
 
 ```{r}
-favstats(~par_median, data=collegedata)
+favstats(~tier, data=newData)
+```
+
+```{r}
+favstats(~hbcu, data=newData)
+```
+
+```{r}
+favstats(~grad_rate_150_p_, data=newData)
+```
+
+```{r}
+favstats(~sticker_price_, data=newData)
+
 ```
 
 ```{r}
 
+favstats(~black_share_fall, data=newData)
+
 ```
+
+```{r}
+favstats(~alien_share_fall, data=newData)
+
+```
+
+
+```{r}
+favstats(~pct_stem_2000, data=newData)
+
+```
+
+```{r}
+favstats(~par_median, data=newData)
+
+```
+
+
+```{r}
+favstats(~Counts, data=newData)
+
+```
+
+```{r}
+favstats(~endowment_pc_, data=newData)
+
+```
+
+Y variable: 
+```{r}
+favstats(~kq5_cond_parq1, data=newData)
+
+```
+
