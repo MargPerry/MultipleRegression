@@ -84,19 +84,22 @@ This variable represents Net Cost of Attendance for the Bottom 20% Income Quinti
 ```{r}
 favstats(~black_share_fall_2000, data=newData)
 ```
+The black_share_fall_200 variable shows us the share of Black undergraduate students in the fall 2000. There is 1 missing observation that could draw concern. Other than that the max, .8082192, seems a bit high but not impossible and the min is 0 which seems unreasonibly and I would want to investigate. 
 
 ```{r}
 favstats(~alien_share_fall_2000, data=newData)
 ```
-
+The explanitory variable of alien_share_fall_2000 represents Share of Non-resident alien undergraduate students in the fall 2000. Again there is 1 missing observation that will have to be managed later. The minimum for the data set is 0 students and the maximum is around 0.02439 share of stduents, both of these are resonable for the varible.
 
 ```{r}
 favstats(~pct_stem_2000, data=newData)
 ```
+This variable prvides us with the information for the STEM Major Share in 2000. We are still missing one observation. But What is odd about this varible is that the median and the min are both zero and the max is a hunderd which is very odd and concerning, as it does not fit how the other shares are shown in that they are whole numbers not decimals.  
 
 ```{r}
 favstats(~par_median, data=newData)
 ```
+The par_median variable provides us information on the median parent household income for a college. Thankfully there are no missing varibles and both the max and min appear resonable. 
 
 
 ```{r}
@@ -117,4 +120,5 @@ This is the explanatory variable.
 ## Most Pressing Data CLeaning 
 
 - We are worried about the 39 missing observations in the grad_rate_150_p_2013 variable. 
+-We are worried about the observations made in the pct_stem_2000 variable 
 
