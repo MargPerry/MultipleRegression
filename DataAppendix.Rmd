@@ -1,0 +1,31 @@
+---
+title: "DataAppendix"
+author: "Zainab"
+date: "11/7/2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+library(mosaic)
+collegedata <- read_csv("data.csv")
+collegeChardata <- read_csv("data2.csv")
+```
+
+```{r}
+str(collegedata, give.attr = FALSE)
+newData = inner_join(collegeChardata, collegedata, by="name")
+# tier, hbcu, grad_rate_150_p_, sticker_price_, black_share_fall, alien_share_fall
+```
+
+
+```{r}
+favstats(~par_median, data=collegedata)
+```
+```{r}
+
+```
