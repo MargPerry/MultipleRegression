@@ -17,16 +17,21 @@ collegeChardata <- read_csv("data2.csv")
 ```
 
 ```{r}
-str(collegedata, give.attr = FALSE)
+#str(collegedata, give.attr = FALSE)
 newData = inner_join(collegeChardata, collegedata, by="name")
 # x variables: tier, hbcu, grad_rate_150_p_, sticker_price_, black_share_fall, alien_share_fall, pct_stem_2000, par_median, Counts, endowment_pc_
 # y variable: kq5_cond_parq1
+na.omit(newData)
+newData$grad_rate_150_p_2013 = as.integer(newData$grad_rate_150_p_2013)
 newData%>%
   select(c(tier,hbcu,grad_rate_150_p_2013,sticker_price_2013,black_share_fall_2000,alien_share_fall_2000,pct_stem_2000,par_median,count,endowment_pc_2000))%>%
   cor()
-#str(newData)
+str(newData)
 ```
-
+##Structure and Names 
+There are 10 variables we are interested in in this dataset and these are:
+Count - Average number of children per cohort. The minimum number of counts is 50, and the maximum is 26989.67.
+endowment_pc_2000 - Endowment Assets per Student in 2000. The minimum number of endowments is 0.634848, and the maximum is 23857.41. There are 1481 missing variables, and this may cause a problem in dataset. A way to get through this is to probably use data imputation methods to account for missing data. 
 
 ```{r}
 favstats(~tier, data=newData)
@@ -76,5 +81,13 @@ Y variable:
 favstats(~kq5_cond_parq1, data=newData)
 ```
 
+##Scatterplots 
+```{r}
+xyplot(kq5_cond_parq1~count, data = newData)
+```
+
+```{r}
+xyplot(kq5_cond_parq1~endowment_pc_2000, data = newData)
+```
 
 
