@@ -19,75 +19,120 @@ collegeChardata <- read_csv("data2.csv")
 ```{r}
 #str(collegedata, give.attr = FALSE)
 newData = inner_join(collegeChardata, collegedata, by="name")
-# x variables: tier, hbcu, grad_rate_150_p_, sticker_price_, black_share_fall, alien_share_fall, pct_stem_2000, par_median, Counts, endowment_pc_
-# y variable: kq5_cond_parq1
-na.omit(newData)
-newData$grad_rate_150_p_2013 = as.integer(newData$grad_rate_150_p_2013)
-newData%>%
-  select(c(tier,hbcu,grad_rate_150_p_2013,sticker_price_2013,black_share_fall_2000,alien_share_fall_2000,pct_stem_2000,par_median,count,endowment_pc_2000))%>%
-  cor()
-str(newData)
 ```
 ##Structure and Names 
 There are 10 variables we are interested in in this dataset and these are:
-Count - Average number of children per cohort. The minimum number of counts is 50, and the maximum is 26989.67.
-endowment_pc_2000 - Endowment Assets per Student in 2000. The minimum number of endowments is 0.634848, and the maximum is 23857.41. There are 1481 missing variables, and this may cause a problem in dataset. A way to get through this is to probably use data imputation methods to account for missing data. 
+
 
 ```{r}
+#newData$tier <- as.factor(newData$tier)
+
 favstats(~tier, data=newData)
+
 ```
+
+This is a categorical variable that encodes the selectivity of a college as following:
+1 = Ivy Plus
+2 = Other elite schools (public and private)
+3 = Highly selective public
+4 = Highly selective private
+5 = Selective public
+6 = Selective private
+7 = Nonselective 4-year public
+8 = Nonselective 4-year private not-for-profit
+9 = Two-year (public and private not-for-profit)
+10 = Four-year for-profit
+11 = Two-year for-profit
+12 = Less than two year schools of any type
+
+From favtstats, we can see that the min and max are 1 and 12 respectively which makes sense. Even though it is a categorical variable, we can make some sense of the mean being close to 7 which stands for Nonselective 4 year public schools. Just out of curiousity, I found out that Smith falls under 4 which is highly selective private schools. This variable has no missing observations which is good. 
 
 ```{r}
 favstats(~hbcu, data=newData)
 ```
 
+This is an indicator variable that tells us whether a particular observation belongs to a group of schools known as Historically Black Colleges and Universities (HBCUs). The value is 1 if it is a part of that group and 0 otherwise. The min and max make sense and we have no missing observations. 
+
 ```{r}
 favstats(~grad_rate_150_p_2013, data=newData)
 ```
 
-```{r}
-favstats(~sticker_price_2013, data=newData)
+This explanatory variable represents the percentage of students graduating within 150 percent of normal time in 2013. We have 172 missing values and a majority of them can be explained by the fact that this data is available only for four and two-year institutions (so only tiers 1 through 11). At this point, we have decided that we only want to look at 2-year and 4-year institutions because other variables such as sticker prices and variables about the racial makeup of schools in also not available for tier 12 schools. I will filter out tier 12 and look at this variable again:
 
+```{r}
+newData = newData %>%
+  filter(tier > 11)
+
+favstats(~grad_rate_150_p_2013, data=newData)
+# xyplot(kq5_cond_parq1~grad_rate_150_p_2013, data=newData)
 ```
+
+There are still 39 missing observations and we will look at what to do with them later on in the analysis when he have identified missing values for all variables.
+
+
+```{r}
+favstats(~scorecard_netprice_2013, data=newData)
+```
+
+This variable represents Net Cost of Attendance for the Bottom 20% Income Quintile in 2013 from College Scorecard in dollars. College Scorecard is the US Department of Education's datastore. We have only one missing observation which is encouraging. The minimum is around 4400 dollars and the maximum is around 29900 dollars which makes sense.
+
 
 ```{r}
 favstats(~black_share_fall_2000, data=newData)
 ```
+The black_share_fall_200 variable shows us the share of Black undergraduate students in the fall 2000. There is 1 missing observation that could draw concern. Other than that the max, .8082192, seems a bit high but not impossible and the min is 0 which seems unreasonibly and I would want to investigate. 
 
 ```{r}
 favstats(~alien_share_fall_2000, data=newData)
 ```
-
+The explanitory variable of alien_share_fall_2000 represents Share of Non-resident alien undergraduate students in the fall 2000. Again there is 1 missing observation that will have to be managed later. The minimum for the data set is 0 students and the maximum is around 0.02439 share of stduents, both of these are resonable for the varible.
 
 ```{r}
 favstats(~pct_stem_2000, data=newData)
 ```
+This variable prvides us with the information for the STEM Major Share in 2000. We are still missing one observation. But What is odd about this varible is that the median and the min are both zero and the max is a hunderd which is very odd and concerning, as it does not fit how the other shares are shown in that they are whole numbers not decimals.  
 
 ```{r}
 favstats(~par_median, data=newData)
 ```
-
-
-```{r}
-favstats(~count, data=newData)
-```
+The par_median variable provides us information on the median parent household income for a college. Thankfully there are no missing varibles and both the max and min appear resonable. 
 
 ```{r}
 favstats(~endowment_pc_2000, data=newData)
 ```
+This variable represents the endowment Assets per Student in 2000. The minimum number of endowments is 0.634848, and the maximum is 23857.41. There are 1481 missing variables, and this may cause a problem in our  dataset. A way to get through this is to probably use data imputation methods to account for missing data. 
+
+```{r}
+favstats(~count, data=newData)
+```
+The count variable is the average number of students per cohort. The minimum seems too small, but it could be that there is a lowere graduation rate at those particular colleges. The 26989.67 maximum is reasonable as it represents the very large collegs. There are no missing observations in this case. 
+
 
 Y variable: 
 ```{r}
 favstats(~kq5_cond_parq1, data=newData)
 ```
 
+<<<<<<< HEAD
+
 ##Scatterplots 
 ```{r}
 xyplot(kq5_cond_parq1~count, data = newData)
 ```
 
+
 ```{r}
 xyplot(kq5_cond_parq1~endowment_pc_2000, data = newData)
 ```
+=======
 
+
+
+This is the explanatory variable. 
+
+## Most Pressing Data CLeaning 
+>>>>>>> e0dcd8f9f56d549db2e09ebac1a575ba20023119
+
+- We are worried about the 39 missing observations in the grad_rate_150_p_2013 variable. 
+-We are worried about the observations made in the pct_stem_2000 variable 
 
