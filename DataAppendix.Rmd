@@ -12,12 +12,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r include=FALSE}
 library(readr)
 library(mosaic)
+library(ggplot2)
 collegedata <- read_csv("data.csv")
 collegeChardata <- read_csv("data2.csv")
 ```
 
 ```{r}
-#str(collegedata, give.attr = FALSE)
+str(collegedata, give.attr = FALSE)
 newData = inner_join(collegeChardata, collegedata, by="name")
 ```
 ##Structure and Names 
@@ -55,6 +56,7 @@ This is an indicator variable that tells us whether a particular observation bel
 
 ```{r}
 favstats(~grad_rate_150_p_2013, data=newData)
+
 ```
 
 This explanatory variable represents the percentage of students graduating within 150 percent of normal time in 2013. We have 172 missing values and a majority of them can be explained by the fact that this data is available only for four and two-year institutions (so only tiers 1 through 11). At this point, we have decided that we only want to look at 2-year and 4-year institutions because other variables such as sticker prices and variables about the racial makeup of schools in also not available for tier 12 schools. I will filter out tier 12 and look at this variable again:
@@ -62,9 +64,10 @@ This explanatory variable represents the percentage of students graduating withi
 ```{r}
 newData = newData %>%
   filter(tier > 11)
-
 favstats(~grad_rate_150_p_2013, data=newData)
-# xyplot(kq5_cond_parq1~grad_rate_150_p_2013, data=newData)
+c <- ggplot(newData, aes(grad_rate_150_p_2013))
+c+ geom_histogram()
+
 ```
 
 There are still 39 missing observations and we will look at what to do with them later on in the analysis when he have identified missing values for all variables.
@@ -72,6 +75,8 @@ There are still 39 missing observations and we will look at what to do with them
 
 ```{r}
 favstats(~scorecard_netprice_2013, data=newData)
+c <- ggplot(newData, aes(scorecard_netprice_2013))
+c+ geom_histogram()
 ```
 
 This variable represents Net Cost of Attendance for the Bottom 20% Income Quintile in 2013 from College Scorecard in dollars. College Scorecard is the US Department of Education's datastore. We have only one missing observation which is encouraging. The minimum is around 4400 dollars and the maximum is around 29900 dollars which makes sense.
@@ -79,51 +84,58 @@ This variable represents Net Cost of Attendance for the Bottom 20% Income Quinti
 
 ```{r}
 favstats(~black_share_fall_2000, data=newData)
+c <- ggplot(newData, aes(black_share_fall_2000))
+c+ geom_histogram()
 ```
 The black_share_fall_200 variable shows us the share of Black undergraduate students in the fall 2000. There is 1 missing observation that could draw concern. Other than that the max, .8082192, seems a bit high but not impossible and the min is 0 which seems unreasonibly and I would want to investigate. 
 
 ```{r}
 favstats(~alien_share_fall_2000, data=newData)
+c <- ggplot(newData, aes(alien_share_fall_2000))
+c+ geom_histogram()
 ```
 The explanitory variable of alien_share_fall_2000 represents Share of Non-resident alien undergraduate students in the fall 2000. Again there is 1 missing observation that will have to be managed later. The minimum for the data set is 0 students and the maximum is around 0.02439 share of stduents, both of these are resonable for the varible.
 
 ```{r}
 favstats(~pct_stem_2000, data=newData)
+c <- ggplot(newData, aes(pct_stem_2000))
+c+ geom_histogram()
 ```
 This variable prvides us with the information for the STEM Major Share in 2000. We are still missing one observation. But What is odd about this varible is that the median and the min are both zero and the max is a hunderd which is very odd and concerning, as it does not fit how the other shares are shown in that they are whole numbers not decimals.  
 
 ```{r}
 favstats(~par_median, data=newData)
+c <- ggplot(newData, aes(par_median))
+c+ geom_histogram()
 ```
 The par_median variable provides us information on the median parent household income for a college. Thankfully there are no missing varibles and both the max and min appear resonable. 
 
 ```{r}
 favstats(~endowment_pc_2000, data=newData)
 ```
-This variable represents the endowment Assets per Student in 2000. The minimum number of endowments is 0.634848, and the maximum is 23857.41. There are 1481 missing variables, and this may cause a problem in our  dataset. A way to get through this is to probably use data imputation methods to account for missing data. 
+This variable represents the endowment assets per student in 2000. The minimum number of endowments is .634848, and the maximum is 71.86159. There are 45 missing variables, and this may cause a problem in our  dataset. A way to get through this is to probably use data imputation methods to account for missing data. 
 
 ```{r}
 favstats(~count, data=newData)
+c <- ggplot(newData, aes(count))
+c+ geom_histogram()
 ```
-The count variable is the average number of students per cohort. The minimum seems too small, but it could be that there is a lowere graduation rate at those particular colleges. The 26989.67 maximum is reasonable as it represents the very large collegs. There are no missing observations in this case. 
+The count variable is the average number of students per cohort. The minimum of 56 seems too small, but it could be that there is a lower graduation rate at those particular colleges. The 941.5 maximum is reasonable as it represents the very large colleges. There are no missing observations in this case. 
 
 
 Y variable: 
 ```{r}
 favstats(~kq5_cond_parq1, data=newData)
+c <- ggplot(newData, aes(kq5_cond_parq1))
+c+ geom_histogram()
+
 ```
+This is our response variable. The kq5_cond_parq1 represents the percentage of children who reach the Top 20% of the income distribution among children with parents in the bottom 20% of the income distribution. The minimum value of 0% make sense, and the maximum value of 29.58% is also reasonable even though it is pretty low. 
 
 <<<<<<< HEAD
 
 ##Scatterplots 
-```{r}
-xyplot(kq5_cond_parq1~count, data = newData)
-```
 
-
-```{r}
-xyplot(kq5_cond_parq1~endowment_pc_2000, data = newData)
-```
 =======
 
 
@@ -133,6 +145,7 @@ This is the explanatory variable.
 ## Most Pressing Data CLeaning 
 >>>>>>> e0dcd8f9f56d549db2e09ebac1a575ba20023119
 
-- We are worried about the 39 missing observations in the grad_rate_150_p_2013 variable. 
--We are worried about the observations made in the pct_stem_2000 variable 
+We are worried about the missing values in our variables especially in our graduation rate and endowments variables. Later on in our analysis, we are thinking about either using data imputation methods, or filtering out our missing variables using na.rm = TRUE , !is.na. Before filtering off the missing values, we will first check to see if any differences exist among them and the values we have and shall report this as part of our analysis. 
+
+Our next steps are to look at the relationships between our response variable, and the other explanatory variable. We did not include this feature in our data appendix because it is more of an analysis rather than a descriptive statistic. 
 
