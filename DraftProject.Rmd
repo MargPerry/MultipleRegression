@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(readr)
 library(mosaic)
 library(ggplot2)
+library(leaps)
 collegedata <- read_csv("data.csv")
 collegeChardata <- read_csv("data2.csv")
 ```
@@ -22,4 +23,12 @@ collegeChardata <- read_csv("data2.csv")
 str(collegedata, give.attr = FALSE)
 newData = inner_join(collegeChardata, collegedata, by="name")
 ```
+```{r}
+allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ scorecard_netprice_2013+ grad_rate_150_p_2013 +hbcu+ tier, data= newData)
+
+plot(allsubsets, scale= "adjr2")
+```
+
+
+
 
