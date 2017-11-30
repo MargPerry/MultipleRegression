@@ -16,16 +16,31 @@ library(mosaic)
 library(ggplot2)
 require(magrittr)
 require(tidyverse)
+<<<<<<< HEAD
 require(leaps)
+=======
+require(Stat2Data)
+library(leaps)
+>>>>>>> 4bf715f9927185eb87acaf8971e14639055134bc
 collegedata <- read_csv("data.csv")
 collegeChardata <- read_csv("data2.csv")
 ```
 
 ```{r}
-str(collegedata, give.attr = FALSE)
 newData = inner_join(collegeChardata, collegedata, by="name")
+newData = newData %>%
+  filter(tier > 11)
+str(newData)
+
 ```
 
+
+#coorelation matrix
+```{r}
+
+```
+
+<<<<<<< HEAD
 
 Stepwise Regression
 ```{r}
@@ -49,3 +64,45 @@ summary(lm(kq5_cond_parq1~tier + black_share_fall_2000 + alien_share_fall_2000 +
 ```
 
 
+=======
+```{r}
+##allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ scorecard_netprice_2013+ grad_rate_150_p_2013 +hbcu+ tier, data= newData)
+# allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
+# plot(allsubsets, scale= "adjr2")
+m1<-plot(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
+Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
+summary(Lm1)
+m1
+```
+
+
+
+
+
+
+# Transforming the response
+
+```{r}
+c <- ggplot(newData, aes(kq5_cond_parq1))
+c+geom_histogram()
+newData = newData %>%
+  mutate(sqrtkq5_cond_parq1 = sqrt(kq5_cond_parq1))
+d <- ggplot(newData, aes(sqrtkq5_cond_parq1))
+d+geom_histogram()
+
+newData = newData %>%
+  mutate(logkq5_cond_parq1 = log(kq5_cond_parq1))
+e <- ggplot(newData, aes(logkq5_cond_parq1))
+e+geom_histogram()
+```
+
+
+CFAU
+
+1. Assumption for regression
+2. Assumptions for inference
+3. Choosing predictors
+4. Testing 
+5. Residuals
+6. Interpretation 
+>>>>>>> 4bf715f9927185eb87acaf8971e14639055134bc

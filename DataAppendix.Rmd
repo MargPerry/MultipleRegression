@@ -112,6 +112,8 @@ The par_median variable provides us information on the median parent household i
 
 ```{r}
 favstats(~endowment_pc_2000, data=newData)
+c <- ggplot(newData, aes(endowment_pc_2000))
+c+ geom_histogram()
 ```
 This variable represents the endowment assets per student in 2000. The minimum number of endowments is .634848, and the maximum is 71.86159. There are 45 missing variables, and this may cause a problem in our  dataset. A way to get through this is to probably use data imputation methods to account for missing data. 
 
@@ -132,6 +134,16 @@ c+ geom_histogram()
 ```
 This is our response variable. The kq5_cond_parq1 represents the percentage of children who reach the Top 20% of the income distribution among children with parents in the bottom 20% of the income distribution. The minimum value of 0% make sense, and the maximum value of 29.58% is also reasonable even though it is pretty low. 
 
+<<<<<<< HEAD
+=======
+##Scatterplots 
+
+
+
+
+This is the explanatory variable. 
+
+>>>>>>> 4bf715f9927185eb87acaf8971e14639055134bc
 ## Most Pressing Data CLeaning 
 
 We are worried about the missing values in our variables especially in our graduation rate and endowments variables. Later on in our analysis, we are thinking about either using data imputation methods, or filtering out our missing variables using na.rm = TRUE , !is.na. Before filtering off the missing values, we will first check to see if any differences exist among them and the values we have and shall report this as part of our analysis. 
