@@ -14,12 +14,51 @@ knitr::opts_chunk$set(echo = TRUE)
 library(readr)
 library(mosaic)
 library(ggplot2)
+require(magrittr)
+require(tidyverse)
+require(Stat2Data)
 collegedata <- read_csv("data.csv")
 collegeChardata <- read_csv("data2.csv")
 ```
 
 ```{r}
-str(collegedata, give.attr = FALSE)
 newData = inner_join(collegeChardata, collegedata, by="name")
+newData = newData %>%
+  filter(tier > 11)
+str(newData)
+
 ```
 
+
+#coorelation matrix
+```{r}
+
+```
+
+
+
+# Transforming the response
+
+```{r}
+c <- ggplot(newData, aes(kq5_cond_parq1))
+c+geom_histogram()
+newData = newData %>%
+  mutate(sqrtkq5_cond_parq1 = sqrt(kq5_cond_parq1))
+d <- ggplot(newData, aes(sqrtkq5_cond_parq1))
+d+geom_histogram()
+
+newData = newData %>%
+  mutate(logkq5_cond_parq1 = log(kq5_cond_parq1))
+e <- ggplot(newData, aes(logkq5_cond_parq1))
+e+geom_histogram()
+```
+
+
+CFAU
+
+1. Assumption for regression
+2. Assumptions for inference
+3. Choosing predictors
+4. Testing 
+5. Residuals
+6. Interpretation 
