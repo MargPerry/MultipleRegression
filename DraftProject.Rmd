@@ -189,3 +189,11 @@ abline(0,0)
 6. Interpretation  
 
 
+```{r}
+plot(residuals(Lm1))
+abline(0,0)
+plot(Lm1)
+```
+6. Interpretation 
+
+
