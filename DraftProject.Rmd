@@ -24,9 +24,13 @@ str(collegedata, give.attr = FALSE)
 newData = inner_join(collegeChardata, collegedata, by="name")
 ```
 ```{r}
-allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ scorecard_netprice_2013+ grad_rate_150_p_2013 +hbcu+ tier, data= newData)
-
-plot(allsubsets, scale= "adjr2")
+##allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ scorecard_netprice_2013+ grad_rate_150_p_2013 +hbcu+ tier, data= newData)
+# allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
+# plot(allsubsets, scale= "adjr2")
+m1<-plot(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
+Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
+summary(Lm1)
+m1
 ```
 
 
