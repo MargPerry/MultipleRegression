@@ -17,6 +17,7 @@ library(ggplot2)
 require(magrittr)
 require(tidyverse)
 require(Stat2Data)
+require(leaps)
 library(leaps)
 collegedata <- read_csv("data.csv")
 collegeChardata <- read_csv("data2.csv")
@@ -24,32 +25,10 @@ collegeChardata <- read_csv("data2.csv")
 
 ```{r}
 newData = inner_join(collegeChardata, collegedata, by="name")
-newData = newData %>%
-  filter(tier > 11)
+
 str(newData)
 
 ```
-
-
-#coorelation matrix
-```{r}
-
-```
-
-```{r}
-##allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ scorecard_netprice_2013+ grad_rate_150_p_2013 +hbcu+ tier, data= newData)
-# allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
-# plot(allsubsets, scale= "adjr2")
-m1<-plot(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
-Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
-summary(Lm1)
-m1
-```
-
-
-
-
-
 
 # Transforming the response
 
@@ -61,11 +40,24 @@ newData = newData %>%
 d <- ggplot(newData, aes(sqrtkq5_cond_parq1))
 d+geom_histogram()
 
-newData = newData %>%
-  mutate(logkq5_cond_parq1 = log(kq5_cond_parq1))
-e <- ggplot(newData, aes(logkq5_cond_parq1))
-e+geom_histogram()
 ```
+
+#coorelation matrix
+```{r}
+
+```
+
+```{r}
+allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
+plot(allsubsets, scale= "adjr2")
+m1<-plot(sqrtkq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
+Lm1<-lm(sqrtkq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
+summary(Lm1)
+m1
+```
+
+
+
 
 
 CFAU
