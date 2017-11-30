@@ -20,6 +20,8 @@ require(leaps)
 require(Stat2Data)
 require(leaps)
 library(leaps)
+library(car)
+require(car)
 collegedata <- read_csv("data.csv")
 collegeChardata <- read_csv("data2.csv")
 ```
@@ -55,9 +57,6 @@ summary(lm(kq5_cond_parq1~tier + black_share_fall_2000 + alien_share_fall_2000 +
 
 
 ```{r}
-##allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ scorecard_netprice_2013+ grad_rate_150_p_2013 +hbcu+ tier, data= newData)
-# allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
-# plot(allsubsets, scale= "adjr2")
 m1<-plot(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
 Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
 summary(Lm1)
@@ -80,11 +79,12 @@ newData = newData %>%
 e <- ggplot(newData, aes(logendowment_pc_2000))
 e+geom_histogram()
 
-
 newData = newData %>%
   mutate(sqrtalien_share_fall_2000 = sqrt(alien_share_fall_2000))
 g <- ggplot(newData, aes(sqrtalien_share_fall_2000))
 g+geom_histogram()
+
+# should we convert tier to categorical variable?
 
 
 ```
@@ -96,12 +96,26 @@ plot(allsubsets, scale= "adjr2")
 
 ```
 
+## none of the variables are collinear
 ```{r}
-m1<-plot(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
-Lm1<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
+vif(Lm1)
+```
+
+# Added an interaction term between par_median and tier
+```{r}
+m1<-plot(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
+Lm1<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier+, data= newData)
 summary(Lm1)
 m1
 ```
+
+
+## All possible combinations
+```{r}
+reg <- lm(sqrtkq5_cond_parq1 ~ (logendowment_pc_2000 + par_median + pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier)^4, data=newData)
+summary(reg)
+```
+
 
 1. Assumption for regression
 2. Assumptions for inference
