@@ -35,36 +35,40 @@ str(newData)
 ```{r}
 c <- ggplot(newData, aes(kq5_cond_parq1))
 c+geom_histogram()
+
 newData = newData %>%
   mutate(sqrtkq5_cond_parq1 = sqrt(kq5_cond_parq1))
 d <- ggplot(newData, aes(sqrtkq5_cond_parq1))
 d+geom_histogram()
 
+newData = newData %>%
+  mutate(logendowment_pc_2000 = log(endowment_pc_2000))
+e <- ggplot(newData, aes(logendowment_pc_2000))
+e+geom_histogram()
+
+newData = newData %>%
+  mutate(logpct_stem_2000 = log(pct_stem_2000))
+f <- ggplot(newData, aes(logpct_stem_2000))
+f+geom_histogram()
+
+newData = newData %>%
+  mutate(logalien_share_fall_2000 = sq(alien_share_fall_2000))
+g <- ggplot(newData, aes(logalien_share_fall_2000))
+g+geom_histogram()
+
+
 ```
 
-#coorelation matrix
-```{r}
-
-```
 
 ```{r}
-allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
+allsubsets<-regsubsets(sqrtkq5_cond_parq1~ count + logendowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data=newData)
 plot(allsubsets, scale= "adjr2")
-m1<-plot(sqrtkq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
-Lm1<-lm(sqrtkq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
+
+```
+
+```{r}
+m1<-plot(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
+Lm1<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
 summary(Lm1)
 m1
 ```
-
-
-
-
-
-CFAU
-
-1. Assumption for regression
-2. Assumptions for inference
-3. Choosing predictors
-4. Testing 
-5. Residuals
-6. Interpretation 
