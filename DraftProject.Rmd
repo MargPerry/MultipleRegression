@@ -16,20 +16,16 @@ library(mosaic)
 library(ggplot2)
 require(magrittr)
 require(tidyverse)
-<<<<<<< HEAD
 require(leaps)
-=======
 require(Stat2Data)
 library(leaps)
->>>>>>> 4bf715f9927185eb87acaf8971e14639055134bc
 collegedata <- read_csv("data.csv")
 collegeChardata <- read_csv("data2.csv")
 ```
 
 ```{r}
 newData = inner_join(collegeChardata, collegedata, by="name")
-newData = newData %>%
-  filter(tier > 11)
+
 str(newData)
 
 ```
@@ -40,9 +36,8 @@ str(newData)
 
 ```
 
-<<<<<<< HEAD
 
-Stepwise Regression
+#Stepwise Regression
 ```{r}
 #just to remove missing values of variables 
 newData = newData%>%
@@ -64,20 +59,14 @@ summary(lm(kq5_cond_parq1~tier + black_share_fall_2000 + alien_share_fall_2000 +
 ```
 
 
-=======
 ```{r}
-##allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ scorecard_netprice_2013+ grad_rate_150_p_2013 +hbcu+ tier, data= newData)
-# allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
-# plot(allsubsets, scale= "adjr2")
+allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
+plot(allsubsets, scale= "adjr2")
 m1<-plot(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
 Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
 summary(Lm1)
 m1
 ```
-
-
-
-
 
 
 # Transforming the response
@@ -95,6 +84,19 @@ newData = newData %>%
 e <- ggplot(newData, aes(logkq5_cond_parq1))
 e+geom_histogram()
 ```
+```{r}
+nullmodel <- lm(logkq5_cond_parq1~1, data = newData)
+fullmodel <- lm(logkq5_cond_parq1~tier + hbcu + black_share_fall_2000 + alien_share_fall_2000 + pct_stem_2000 + par_median + endowment_pc_2000 + count, data = newData)
+
+# With 'scale=fullMSE', the AIC term can be interpreted as Cp
+fullMSE <- (summary(fullmodel)$sigma)^2
+
+step(nullmodel, scope = list(upper = fullmodel),
+scale = fullMSE, direction = "both")
+```
+```{r}
+summary(lm(logkq5_cond_parq1~tier + black_share_fall_2000 + alien_share_fall_2000 + pct_stem_2000 + par_median + endowment_pc_2000, data = newData))
+```
 
 
 CFAU
@@ -104,5 +106,4 @@ CFAU
 3. Choosing predictors
 4. Testing 
 5. Residuals
-6. Interpretation 
->>>>>>> 4bf715f9927185eb87acaf8971e14639055134bc
+6. Interpretation  
