@@ -104,7 +104,7 @@ vif(Lm1)
 # Added an interaction term between par_median and tier
 ```{r}
 m1<-plot(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
-Lm1<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier+, data= newData)
+Lm1<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
 summary(Lm1)
 m1
 ```
@@ -122,5 +122,10 @@ summary(reg)
 3. Choosing predictors
 4. Testing 
 5. Residuals
+```{r}
+plot(residuals(Lm1))
+abline(0,0)
+plot(Lm1)
+```
 6. Interpretation 
 
