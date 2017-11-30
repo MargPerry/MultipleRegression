@@ -14,6 +14,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(readr)
 library(mosaic)
 library(ggplot2)
+require(magrittr)
+require(tidyverse)
+require(leaps)
 collegedata <- read_csv("data.csv")
 collegeChardata <- read_csv("data2.csv")
 ```
@@ -22,4 +25,27 @@ collegeChardata <- read_csv("data2.csv")
 str(collegedata, give.attr = FALSE)
 newData = inner_join(collegeChardata, collegedata, by="name")
 ```
+
+
+Stepwise Regression
+```{r}
+#just to remove missing values of variables 
+newData = newData%>%
+  filter(!is.na(tier),!is.na(hbcu),!is.na(black_share_fall_2000),!is.na(alien_share_fall_2000),!is.na(pct_stem_2000),
+         !is.na(par_median),!is.na(endowment_pc_2000),!is.na(count),!is.na(kq5_cond_parq1))
+
+nullmodel <- lm(kq5_cond_parq1~1, data = newData)
+fullmodel <- lm(kq5_cond_parq1~tier + hbcu + black_share_fall_2000 + alien_share_fall_2000 + pct_stem_2000 + par_median + endowment_pc_2000 + count, data = newData)
+
+# With 'scale=fullMSE', the AIC term can be interpreted as Cp
+fullMSE <- (summary(fullmodel)$sigma)^2
+
+step(nullmodel, scope = list(upper = fullmodel),
+scale = fullMSE, direction = "both")
+```
+
+```{r}
+summary(lm(kq5_cond_parq1~tier + black_share_fall_2000 + alien_share_fall_2000 + pct_stem_2000 + par_median + endowment_pc_2000, data = newData))
+```
+
 
