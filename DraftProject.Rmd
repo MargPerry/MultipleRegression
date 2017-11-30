@@ -16,6 +16,7 @@ library(mosaic)
 library(ggplot2)
 require(magrittr)
 require(tidyverse)
+require(leaps)
 require(Stat2Data)
 require(leaps)
 library(leaps)
@@ -28,6 +29,39 @@ newData = inner_join(collegeChardata, collegedata, by="name")
 
 str(newData)
 
+```
+
+Stepwise Regression
+```{r}
+#just to remove missing values of variables 
+newData = newData%>%
+  filter(!is.na(tier),!is.na(hbcu),!is.na(black_share_fall_2000),!is.na(alien_share_fall_2000),!is.na(pct_stem_2000),
+         !is.na(par_median),!is.na(endowment_pc_2000),!is.na(count),!is.na(kq5_cond_parq1))
+
+nullmodel <- lm(kq5_cond_parq1~1, data = newData)
+fullmodel <- lm(kq5_cond_parq1~tier + hbcu + black_share_fall_2000 + alien_share_fall_2000 + pct_stem_2000 + par_median + endowment_pc_2000 + count, data = newData)
+
+# With 'scale=fullMSE', the AIC term can be interpreted as Cp
+fullMSE <- (summary(fullmodel)$sigma)^2
+
+step(nullmodel, scope = list(upper = fullmodel),
+scale = fullMSE, direction = "both")
+```
+
+```{r}
+summary(lm(kq5_cond_parq1~tier + black_share_fall_2000 + alien_share_fall_2000 + pct_stem_2000 + par_median + endowment_pc_2000, data = newData))
+```
+
+
+
+```{r}
+##allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ scorecard_netprice_2013+ grad_rate_150_p_2013 +hbcu+ tier, data= newData)
+# allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
+# plot(allsubsets, scale= "adjr2")
+m1<-plot(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
+Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
+summary(Lm1)
+m1
 ```
 
 # Transforming the response
@@ -72,3 +106,11 @@ Lm1<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+alien_s
 summary(Lm1)
 m1
 ```
+
+1. Assumption for regression
+2. Assumptions for inference
+3. Choosing predictors
+4. Testing 
+5. Residuals
+6. Interpretation 
+
