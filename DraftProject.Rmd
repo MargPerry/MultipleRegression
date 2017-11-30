@@ -1,0 +1,25 @@
+---
+title: "Draft Project"
+author: ""
+date: "11/7/2017"
+output: pdf_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+library(readr)
+library(mosaic)
+library(ggplot2)
+collegedata <- read_csv("data.csv")
+collegeChardata <- read_csv("data2.csv")
+```
+
+```{r}
+str(collegedata, give.attr = FALSE)
+newData = inner_join(collegeChardata, collegedata, by="name")
+```
+
