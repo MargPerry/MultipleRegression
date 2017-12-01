@@ -133,7 +133,7 @@ vif(Lm1)
 m1<-plot(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
 Lm1<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
 summary(Lm1)
-m1
+
 ```
 
 
@@ -153,6 +153,13 @@ anova(nested1, Lm1)
 ```
 P-value > 0.05 therefore we can use the nested model instead of the full model 
 
+```{r}
+m<-lm(sqrtkq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
+
+nested1b <- lm(sqrtkq5_cond_parq1~par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
+anova(nested1b, m)
+```
+
 #nested2  
 ```{r}
 Lm<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000 + par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
@@ -165,8 +172,8 @@ anova(nested2, Lm)
 ```{r}
 Lm<-lm(sqrtkq5_cond_parq1~ logendowment_pc_2000 + par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
 
-nested2 <- lm(sqrtkq5_cond_parq1~ logendowment_pc_2000 + pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 + par_median, data= newData)
-anova(nested2, Lm)
+nested2b <- lm(sqrtkq5_cond_parq1~ logendowment_pc_2000 + pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 + par_median, data= newData)
+anova(nested2b, Lm)
 ```
 Still need full model 
 
@@ -174,10 +181,9 @@ Still need full model
 
 #Working with model without endowment --nested1
 ```{r}
-fitted(nested1)
-residuals(nested1)
 plot(residuals(nested1)~fitted(nested1))
 abline(0,0)
+plot(nested1)
 ```
 
 
