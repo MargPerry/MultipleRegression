@@ -103,14 +103,6 @@ Everything looks good! Other *exploratory* analysis suggested that we may have s
 
 ```{r}
 m1<-plot(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
-<<<<<<< HEAD
-Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
-summary(Lm1)
-
-```
-
-=======
->>>>>>> 4d570ae522b499049d6152ac89086afa8d1205b2
 
 Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
 
@@ -128,21 +120,6 @@ Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_shar
 nested1 <- lm(kq5_cond_parq1~par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+ tier +par_median*tier, data= newData)
 anova(nested1, Lm1)
 ```
-<<<<<<< HEAD
-P-value > 0.05 therefore we can use the nested model instead of the full model 
-
-```{r}
-m<-lm(sqrtkq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
-
-nested1b <- lm(sqrtkq5_cond_parq1~par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
-anova(nested1b, m)
-```
-
-#nested2  
-```{r}
-Lm<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000 + par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
-=======
->>>>>>> 4d570ae522b499049d6152ac89086afa8d1205b2
 
 The nested model does not have endowment. Since the p-value < 0.05 we should use the full model and keep endowment.
 
@@ -150,13 +127,8 @@ The nested model does not have endowment. Since the p-value < 0.05 we should use
 ```{r}
 Lm<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
 
-<<<<<<< HEAD
-nested2b <- lm(sqrtkq5_cond_parq1~ logendowment_pc_2000 + pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 + par_median, data= newData)
-anova(nested2b, Lm)
-=======
 nested2 <- lm(kq5_cond_parq1~endowment_pc_2000 + pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 + tier, data= newData)
 anova(nested2, Lm)
->>>>>>> 4d570ae522b499049d6152ac89086afa8d1205b2
 ```
 
 The nested model does not have par_median Since the p-value < 0.05 we should use the full model and keep par_median.
@@ -164,15 +136,7 @@ The nested model does not have par_median Since the p-value < 0.05 we should use
 # Nested F-test to check tier 
 
 ```{r}
-<<<<<<< HEAD
-plot(residuals(nested1)~fitted(nested1))
-abline(0,0)
-plot(nested1)
-```
-
-=======
 Lm<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
->>>>>>> 4d570ae522b499049d6152ac89086afa8d1205b2
 
 nested2 <- lm(kq5_cond_parq1~ endowment_pc_2000 + pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 + par_median, data= newData)
 anova(nested2, Lm)
@@ -186,4 +150,19 @@ plot(residuals(Lm1))
 abline(0,0)
 plot(Lm1)
 ```
+```{r}
+summary(Lm1)
+```
+
+After having checked the importance of our variable, our fitted model is 
+
+$\widehat{kq5\_cond\_parq1} = -11.18 - 0.00002229endowment\_pc\_2000 + 0.0004459par\_median + 0.2167pct\_stem\_2000 +  25.84sqrtalien\_share\_fall\_2000 - 3.361black\_share\_fall\_2000 + 1.494tier + 0.0000405par\_median\cdot tier$
+
+68% of the variability in the percentage of children who reach the Top 20% of the income distribution among children with parents in the bottom 20% of the income distribution (kq5_cond_parq1) is explained by the model. 
+
+
+
+
+
+
 
