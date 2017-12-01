@@ -1,10 +1,8 @@
 ---
 title: "Draft Project"
-author: ""
 date: "11/7/2017"
 output: pdf_document
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -26,25 +24,38 @@ collegedata <- read_csv("data.csv")
 collegeChardata <- read_csv("data2.csv")
 ```
 
+## Joining the two tables on the name of the college
 ```{r}
 newData = inner_join(collegeChardata, collegedata, by="name")
+```
 
-#str(newData)
+## Transforming the alien share explanatory variable
+```{r}
+
+# before transformation
+c <- ggplot(newData, aes(alien_share_fall_2000))
+c+geom_histogram()
+
+newData = newData %>%
+  mutate(sqrtalien_share_fall_2000 = sqrt(alien_share_fall_2000))
+
+# after transformation
+d <- ggplot(newData, aes(sqrtalien_share_fall_2000))
+d+geom_histogram()
 
 ```
 
 
-
-#Stepwise Regression
+# Running stepwise regression
 
 ```{r}
 #just to remove missing values of variables 
 newData = newData%>%
-  filter(!is.na(tier),!is.na(hbcu),!is.na(black_share_fall_2000),!is.na(alien_share_fall_2000),!is.na(pct_stem_2000),
+  filter(!is.na(tier),!is.na(hbcu),!is.na(black_share_fall_2000),!is.na(sqrtalien_share_fall_2000),!is.na(pct_stem_2000),
          !is.na(par_median),!is.na(endowment_pc_2000),!is.na(count),!is.na(kq5_cond_parq1))
 
 nullmodel <- lm(kq5_cond_parq1~1, data = newData)
-fullmodel <- lm(kq5_cond_parq1~tier + hbcu + black_share_fall_2000 + alien_share_fall_2000 + pct_stem_2000 + par_median + endowment_pc_2000 + count, data = newData)
+fullmodel <- lm(kq5_cond_parq1~tier + hbcu + black_share_fall_2000 + sqrtalien_share_fall_2000 + pct_stem_2000 + par_median + endowment_pc_2000 + count, data = newData)
 
 # With 'scale=fullMSE', the AIC term can be interpreted as Cp
 fullMSE <- (summary(fullmodel)$sigma)^2
@@ -53,118 +64,71 @@ step(nullmodel, scope = list(upper = fullmodel),
 scale = fullMSE, direction = "both")
 ```
 
-```{r}
-summary(lm(kq5_cond_parq1~tier + black_share_fall_2000 + alien_share_fall_2000 + pct_stem_2000 + par_median + endowment_pc_2000, data = newData))
-```
-
-
+## All subsets approach
 
 ```{r}
-allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
+allsubsets<-regsubsets(kq5_cond_parq1~ count + endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
 plot(allsubsets, scale= "adjr2")
 ```
 
-```{r}
-m1<-plot(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
-Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+alien_share_fall_2000+ black_share_fall_2000+ tier, data= newData)
-summary(Lm1)
-m1
-```
 
+Both gave us the same model!
 
-
-# Transforming the response
+## We will also look at the correlation matrix to see if some variables are collinear
 
 ```{r}
-newData = newData %>%
-  mutate(sqrtkq5_cond_parq1 = sqrt(kq5_cond_parq1))
-d <- ggplot(newData, aes(sqrtkq5_cond_parq1))
-d+geom_histogram()
-
-newData = newData %>%
-  mutate(logendowment_pc_2000 = log(endowment_pc_2000))
-e <- ggplot(newData, aes(logendowment_pc_2000))
-e+geom_histogram()
-
-newData = newData %>%
-  mutate(sqrtalien_share_fall_2000 = sqrt(alien_share_fall_2000))
-g <- ggplot(newData, aes(sqrtalien_share_fall_2000))
-g+geom_histogram()
-
 newData %>%
-  select(c(sqrtalien_share_fall_2000,endowment_pc_2000, endowment_pc_2000, par_median, tier, black_share_fall_2000, pct_stem_2000))%>%
+  select(c(sqrtalien_share_fall_2000,endowment_pc_2000, par_median, tier, black_share_fall_2000, pct_stem_2000))%>%
   cor()
-
-# should we convert tier to categorical variable?
-# should we log endowment or not? It's not significant log
-
 ```
 
+Nothing is collinear!
+
+## Now lets fit this model
 
 ```{r}
-nullmodel <- lm(sqrtkq5_cond_parq1~1, data = newData)
-fullmodel <- lm(sqrtkq5_cond_parq1~ tier + hbcu + black_share_fall_2000 + alien_share_fall_2000 + pct_stem_2000 + par_median + endowment_pc_2000 + count, data = newData)
-
-# With 'scale=fullMSE', the AIC term can be interpreted as Cp
-fullMSE <- (summary(fullmodel)$sigma)^2
-
-step(nullmodel, scope = list(upper = fullmodel),
-scale = fullMSE, direction = "both")
+Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier, data= newData)
+summary(Lm1)
 ```
 
+## Variance Inflaction Factor
 
-```{r}
-summary(lm(sqrtkq5_cond_parq1~tier + black_share_fall_2000 + alien_share_fall_2000 + pct_stem_2000 + par_median + endowment_pc_2000, data = newData))
-```
-
-
-```{r}
-allsubsets<-regsubsets(sqrtkq5_cond_parq1~ count + logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data=newData)
-plot(allsubsets, scale= "adjr2")
-
-```
-
-## none of the variables are collinear
 ```{r}
 vif(Lm1)
 ```
 
-# Added an interaction term between par_median and tier
+Everything looks good! Other *exploratory* analysis suggested that we may have some collinearity between par_median and tier so we will add an interaction term to explain this.
+
+# Model including the interaction term
 
 ```{r}
 m1<-plot(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
+<<<<<<< HEAD
 Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
 summary(Lm1)
 
 ```
 
+=======
+>>>>>>> 4d570ae522b499049d6152ac89086afa8d1205b2
 
-Conditions for regression and inference: 
-1. Linearity
-2. Normality
+Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
 
-## All possible combinations **don't run this**
-```{r}
-reg <- lm(sqrtkq5_cond_parq1 ~ (logendowment_pc_2000 + par_median + pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier)^4, data=newData)
-summary(reg)
+summary(Lm1)
 ```
 
+It explains 68% of the variability in the response. 
 
+## Nested F- tests
 
-1.Residuals
-2. F-test etc
-3. Conditions for inference and regression
-4. Interpret coefficients 
-5. Confidence intervals
-6. Write a story 
-
-#Nested F- tests
+# Nested F-test to check endowment
 ```{r}
-Lm1<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
+Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
 
-nested1 <- lm(sqrtkq5_cond_parq1~par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
+nested1 <- lm(kq5_cond_parq1~par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+ tier +par_median*tier, data= newData)
 anova(nested1, Lm1)
 ```
+<<<<<<< HEAD
 P-value > 0.05 therefore we can use the nested model instead of the full model 
 
 ```{r}
@@ -177,43 +141,49 @@ anova(nested1b, m)
 #nested2  
 ```{r}
 Lm<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000 + par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
+=======
+>>>>>>> 4d570ae522b499049d6152ac89086afa8d1205b2
 
-nested2 <- lm(sqrtkq5_cond_parq1~logendowment_pc_2000 + pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 + tier, data= newData)
-anova(nested2, Lm)
-```
-... still need par_median
+The nested model does not have endowment. Since the p-value < 0.05 we should use the full model and keep endowment.
 
+# Nested F-test to check par_median 
 ```{r}
-Lm<-lm(sqrtkq5_cond_parq1~ logendowment_pc_2000 + par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
+Lm<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
 
+<<<<<<< HEAD
 nested2b <- lm(sqrtkq5_cond_parq1~ logendowment_pc_2000 + pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 + par_median, data= newData)
 anova(nested2b, Lm)
+=======
+nested2 <- lm(kq5_cond_parq1~endowment_pc_2000 + pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 + tier, data= newData)
+anova(nested2, Lm)
+>>>>>>> 4d570ae522b499049d6152ac89086afa8d1205b2
 ```
-Still need full model 
 
+The nested model does not have par_median Since the p-value < 0.05 we should use the full model and keep par_median.
 
+# Nested F-test to check tier 
 
-#Working with model without endowment --nested1
 ```{r}
+<<<<<<< HEAD
 plot(residuals(nested1)~fitted(nested1))
 abline(0,0)
 plot(nested1)
 ```
 
+=======
+Lm<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
+>>>>>>> 4d570ae522b499049d6152ac89086afa8d1205b2
 
+nested2 <- lm(kq5_cond_parq1~ endowment_pc_2000 + pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 + par_median, data= newData)
+anova(nested2, Lm)
+```
+The nested model does not have tier Since the p-value < 0.05 we should use the full model and keep tier
 
-2. Assumptions for inference
-3. Choosing predictors
-4. Testing 
-5. Residuals
-6. Interpretation  
-
+## Analysis of residuals
 
 ```{r}
 plot(residuals(Lm1))
 abline(0,0)
 plot(Lm1)
 ```
-6. Interpretation 
-
 
