@@ -29,9 +29,11 @@ collegeChardata <- read_csv("data2.csv")
 ```{r}
 newData = inner_join(collegeChardata, collegedata, by="name")
 
-str(newData)
+#str(newData)
 
 ```
+
+
 
 Stepwise Regression
 ```{r}
@@ -66,9 +68,6 @@ m1
 # Transforming the response
 
 ```{r}
-c <- ggplot(newData, aes(kq5_cond_parq1))
-c+geom_histogram()
-
 newData = newData %>%
   mutate(sqrtkq5_cond_parq1 = sqrt(kq5_cond_parq1))
 d <- ggplot(newData, aes(sqrtkq5_cond_parq1))
@@ -84,8 +83,12 @@ newData = newData %>%
 g <- ggplot(newData, aes(sqrtalien_share_fall_2000))
 g+geom_histogram()
 
-# should we convert tier to categorical variable?
+newData %>%
+  select(c(sqrtalien_share_fall_2000,endowment_pc_2000, endowment_pc_2000, par_median, tier, black_share_fall_2000, pct_stem_2000))%>%
+  cor()
 
+# should we convert tier to categorical variable?
+# should we log endowment or not? It's not significant log
 
 ```
 
@@ -103,24 +106,28 @@ vif(Lm1)
 
 # Added an interaction term between par_median and tier
 ```{r}
-m1<-plot(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier, data= newData)
-Lm1<-lm(sqrtkq5_cond_parq1~logendowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000+ tier +par_median*tier+, data= newData)
+m1<-plot(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
+Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
 summary(Lm1)
 m1
 ```
 
 
-## All possible combinations
+Conditions for regression and inference: 
+1. Linearity
+2. Normality
+
+## All possible combinations **don't run this**
 ```{r}
 reg <- lm(sqrtkq5_cond_parq1 ~ (logendowment_pc_2000 + par_median + pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier)^4, data=newData)
 summary(reg)
 ```
 
 
-1. Assumption for regression
-2. Assumptions for inference
-3. Choosing predictors
-4. Testing 
-5. Residuals
-6. Interpretation 
+1.Residuals
+2. F-test etc
+3. Conditions for inference and regression
+4. Interpret coefficients 
+5. Confidence intervals
+6. Write a story 
 
