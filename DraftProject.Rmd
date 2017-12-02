@@ -162,16 +162,18 @@ $\widehat{kq5\_cond\_parq1} = -11.18 - 0.00002229endowment\_pc\_2000 + 0.0004459
 68% of the variability in the percentage of children who reach the Top 20% of the income distribution among children with parents in the bottom 20% of the income distribution (kq5_cond_parq1) is explained by the model. 
 
 According to the model:
-\begin{description}
-   \item[$\bullet$] When there are no variables, the kq5_cond_parq1 decreases by 11.18%, 
-   \item[$\bullet$] Holding all else constant, a $1 increase in endowment results in a 0.00002229% decrease in kq5_cond_parq1,
-   \item[$\bullet$] Holding all else constant, a $1 increase in parents' median income results in a 0.0004459% increase in kq5_cond_parq1,
-   \item[$\bullet$] Holding all else constant, a percentage increase in stem students results in a 0.2167% increase in kq5_cond_parq1,
-   \item[$\bullet$] Holding all else constant, if we add one more foreign student, we increase the percentage of kq5_cond_parq1 by 25.84%,
-   \item[$\bullet$] Holding all else constant, if we add one more black student, kq5_cond_parq1 decreases by 3.361%,
-   \item[$\bullet$] Holding all else constant, a one unit increase in tier increases the kq5_cond_parq1 by 1.494%. We will need to make this variable a factor. 
-   \item[$\bullet$]Holding all else constant, a $1 increase in parents median results in a 0.0000405% increase in kq5_cond_parq1 while moderating for tier. 
-\end{description}
+
+
+   * When there are no variables, the kq5_cond_parq1 decreases by 11.18%, 
+   *Holding all else constant, a $1 increase in endowment results in a 0.00002229% decrease in kq5_cond_parq1,
+   * Holding all else constant, a $1 increase in parents' median income results in a 0.0004459% increase in kq5_cond_parq1,
+   * Holding all else constant, a percentage increase in stem students results in a 0.2167% increase in kq5_cond_parq1,
+   * Holding all else constant, if we add one more foreign student, we increase the percentage of kq5_cond_parq1 by 25.84%,
+  * Holding all else constant, if we add one more black student, kq5_cond_parq1 decreases by 3.361%,
+   *Holding all else constant, a one unit increase in tier increases the kq5_cond_parq1 by 1.494%. We will need to make this variable a factor. 
+   *Holding all else constant, a $1 increase in parents median results in a 0.0000405% increase in kq5_cond_parq1 while moderating for tier. 
+   
+
 
 
 
