@@ -18,8 +18,11 @@ require(leaps)
 require(Stat2Data)
 require(leaps)
 library(leaps)
+require(stargazer)
 library(car)
 require(car)
+library("ggthemes")
+library("scales")
 collegedata <- read_csv("data.csv")
 collegeChardata <- read_csv("data2.csv")
 ```
@@ -27,6 +30,7 @@ collegeChardata <- read_csv("data2.csv")
 ## Joining the two tables on the name of the college
 ```{r}
 newData = inner_join(collegeChardata, collegedata, by="name")
+ggplotData = newData
 ```
 
 ## Transforming the alien share explanatory variable
@@ -107,6 +111,7 @@ m1<-plot(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_sha
 Lm1<-lm(kq5_cond_parq1~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
 
 summary(Lm1)
+stargazer(Lm1, type="text")
 ```
 
 It explains 68% of the variability in the response. 
@@ -150,6 +155,7 @@ plot(residuals(Lm1))
 abline(0,0)
 plot(Lm1)
 ```
+
 ```{r}
 summary(Lm1)
 ```
@@ -175,7 +181,59 @@ According to the model:
    
 
 
+# Visualizing results by tier
+```{r}
+favstats(~tier, data=ggplotData)
+
+highTier = filter(ggplotData, tier<7)
+lowTier = filter(ggplotData, tier>6)
+#ggplot(highTier, aes(x=tier, y=kq5_cond_parq1))+geom_bar(stat="identity", aes(fill=factor(tier)))
+ggplot(highTier, aes(x=region, y=kq5_cond_parq1))+geom_bar(stat="identity", aes(fill=factor(tier)))+ stat_summary(fun.y="mean", geom="bar")+ theme_pander() +
+  scale_fill_pander() + scale_fill_discrete(name="Tiers of colleges",
+                         breaks=c("1", "2", "3", "4", "5", "6"),
+                         labels=c("Ivy plus", "Other elite schools", "Highly selective public", "Highly selective private", "Selective public", "Selective private"))
+```
+
+```{r}
+favstats(~tier, data=highTier)
+
+highTier <- highTier %>%
+  mutate(tier=as.factor(tier))
+
+lowTier <- lowTier %>%
+  mutate(tier=as.factor(tier))
+
+bwplot1 = bwplot(~kq5_cond_parq1| tier, data=highTier, layout =c(1,5))
+bwplot2 = bwplot(~kq5_cond_parq1| tier, data=lowTier, layout =c(1,5))
+
+print(bwplot1)
+print(bwplot2)
+
+```
 
 
+```{r}
+fm.aov = aov(kq5_cond_parq1 ~ tier, data=highTier)
+summary(fm.aov)
+model.tables(fm.aov)
 
+fm.aov2 = aov(kq5_cond_parq1 ~ tier, data=lowTier)
+summary(fm.aov2)
+model.tables(fm.aov2)
+```
+
+```{r}
+require(agricolae)
+
+LSD1<-LSD.test(fm.aov,"tier", group=TRUE, console=TRUE)
+LSD2<-LSD.test(fm.aov2,"tier", group=TRUE, console=TRUE)
+
+```
+
+# Lets look at Smith College
+
+```{r}
+smithData = filter(highTier, name=="Smith College")
+smithData$tier
+```
 

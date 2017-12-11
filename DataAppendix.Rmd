@@ -20,6 +20,7 @@ collegeChardata <- read_csv("data2.csv")
 ```{r}
 str(collegedata, give.attr = FALSE)
 newData = inner_join(collegeChardata, collegedata, by="name")
+f
 ```
 ##Structure and Names 
 There are 10 variables we are interested in in this dataset and these are:
@@ -64,7 +65,7 @@ This explanatory variable represents the percentage of students graduating withi
 ```{r}
 newData = newData %>%
   filter(tier > 11)
-favstats(~grad_rate_150_p_2013, data=newData)
+favstats(~tier, data=newData)
 c <- ggplot(newData, aes(grad_rate_150_p_2013))
 c+ geom_histogram()
 
