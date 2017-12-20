@@ -1,0 +1,89 @@
+---
+title: "Appendix"
+author: "Margaret Perry, Rutendo Madziwo, Zainab Rizvi"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(mosaic)
+library(ggplot2)
+require(magrittr)
+require(tidyverse)
+require(leaps)
+require(agricolae)
+require(Stat2Data)
+require(leaps)
+library(leaps)
+require(stargazer)
+library(car)
+require(car)
+library("ggthemes")
+library("scales")
+collegedata <- read_csv("data.csv")
+collegeChardata <- read_csv("data2.csv")
+newData = inner_join(collegeChardata, collegedata, by="name")
+newData = newData %>%
+  mutate(sqrtalien_share_fall_2000 = sqrt(alien_share_fall_2000))
+newData = newData %>%
+  mutate(mobility = kq5_cond_parq1)
+Lm1<-lm(mobility~endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+black_share_fall_2000+tier +par_median*tier, data= newData)
+
+```
+
+
+## Figure A: Results of model selection using all subsets 
+
+```{r echo=FALSE}
+allsubsets<-regsubsets(mobility~ count + endowment_pc_2000+par_median+pct_stem_2000+sqrtalien_share_fall_2000+ black_share_fall_2000 +hbcu+ tier, data= newData)
+plot(allsubsets, scale= "adjr2")
+```
+
+## Figure B: Residual plots that confirm that conditions of inference are met
+
+```{r echo=FALSE}
+plot(residuals(Lm1))
+abline(0,0)
+plot(Lm1)
+```
+
+## Figure C: Summary of the regression model
+
+```{r echo=FALSE}
+stargazer(Lm1, type="text")
+```
+
+## Figure D: Tier vs Mobility plot
+
+```{r echo=FALSE}
+plot(mobility ~ tier, data=newData)
+```
+
+## List of tiers: 
+
+1. Ivy Plus 
+
+2. Other elite schools (public and private) 
+
+3. Highly selective public 
+
+4. Highly selective private 
+
+5. Selective public 
+
+6. Selective private 
+
+7. Nonselective 4-year public 
+
+8. Nonselective 4-year private not-for-profit 
+
+9. Two-year (public and private not-for-profit) 
+
+10. Four-year for-profit 
+
+11. Two-year for-profit 
+
+12. Less than two year schools of any type
+
+
